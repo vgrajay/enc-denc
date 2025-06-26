@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Encrypt Your Message</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      max-width: 600px;
+      width: 100%;
+      animation: popIn 0.8s ease-in-out;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 28px;
+      background: linear-gradient(90deg, #007bff, #00d4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+      animation: typing 3s steps(25) 1;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid #007bff;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+
+    textarea, input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    textarea:focus, input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0,123,255,0.5);
+      outline: none;
+    }
+
+    .btn-group {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    button {
+      background: linear-gradient(45deg, #007bff, #00c6ff);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px rgba(0,123,255,0.3);
+    }
+
+    #result {
+      background-color: #f1f1f1;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔐 Encrypt Your Message</h2>
+
+    <label for="message">Message:</label>
+    <textarea id="message" rows="4"></textarea>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password">
+
+    <div class="btn-group">
+      <button onclick="encrypt()">Encrypt 🔒</button>
+      <button onclick="decrypt()">Decrypt 🔓</button>
+    </div>
+
+    <label for="result">Result:</label>
+    <textarea id="result" rows="4" readonly></textarea>
+  </div>
+
+  <script>
+    function encrypt() {
+      const msg = document.getElementById("message").value;
+      const pass = document.getElementById("password").value;
+      if (!msg || !pass) return alert("Enter both message and password");
+      const encrypted = CryptoJS.AES.encrypt(msg, pass).toString();
+      document.getElementById("result").value = encrypted;
+    }
+
+    function decrypt() {
+      const encryptedText = document.getElementById("message").value;
+      const pass = document.getElementById("password").value;
+      if (!encryptedText || !pass) return alert("Enter encrypted text and password");
+
+      try {
+        const bytes = CryptoJS.AES.decrypt(encryptedText, pass);
+        const original = bytes.toString(CryptoJS.enc.Utf8);
+        if (!original) throw "Invalid password or ciphertext";
+        document.getElementById("result").value = original;
+      } catch (e) {
+        alert("Decryption failed: " + e);
+      }
+    }
+  </script>
+
+<script>
+  // Disable right-click
+  document.addEventListener('contextmenu', event => event.preventDefault());
+
+  // Disable common inspect element shortcuts
+  document.onkeydown = function (e) {
+    if (
+      e.key === "F12" || // F12
+      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) || // Ctrl+Shift+I/J/C
+      (e.ctrlKey && e.key === "U") // Ctrl+U
+    ) {
+      return false;
+    }
+  };
+
+  // Disable drag/select
+  document.onselectstart = () => false;
+  document.ondragstart = () => false;
+</script>
+
+
+</body>
+</html>
